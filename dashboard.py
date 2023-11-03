@@ -94,7 +94,8 @@ def fmt(x):
     return label_fmt
 
 # menyiapkan dataframe
-all_df = pd.read_csv("all_data.csv")
+url = "https://drive.google.com/uc?export=download&id=1AQBBAoW0t_B27sKrrVRqSg2PO1mn-BTu"
+all_df = pd.read_csv(url)
 
 demograph_df = create_demograph(all_df)
 pollutant_classification_df = create_pollutant_classification(all_df)
