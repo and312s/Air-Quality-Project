@@ -176,7 +176,7 @@ with tab1:
         category_colors = plt.colormaps['YlGnBu_r'](
             np.linspace(0.15, 0.85, data.shape[1]))
         
-        fig, ax = plt.subplots(figsize=(16.5, 0.4))
+        fig, ax = plt.subplots(figsize=(17.45, 0.4))
         ax.invert_yaxis()
         ax.xaxis.set_visible(False)
         ax.set_xlim(0, np.sum(data, axis=1).max())    
