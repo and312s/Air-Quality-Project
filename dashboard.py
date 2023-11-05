@@ -118,7 +118,7 @@ st.header("Air Quality Dashboard :cloud:")
 st.write("\n\n")
 
 
-tab1, tab2, tab3 = st.tabs(["Overview", "Aqi in Station", "Pollutant's Regretion"])
+tab1, tab2, tab3, tab4 = st.tabs(["Overview", "Aqi in Station", "Pollutant's Comparison", "Pollutant's Regretion"])
 
 with tab1:
     col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -154,47 +154,20 @@ with tab1:
 
     # Menambahkan konten ke masing-masing kolom
     with col1:
+        st.subheader("Air Quality Demograph")
         color = ["#4477CE", "#35155D", "#E84A5F", "#FFAC33", "#94D82D"]
         fig, ax = plt.subplots(figsize=(16.5, 5.4))
         
         sns.barplot(x="station", y="PM2.5", hue="year", palette=color, data=demograph_df)
         plt.xlabel("station", color="white")
         plt.ylabel("PM2.5", color="white")
-        plt.legend(loc="upper center", ncol=5, )
-        plt.title("Air Quality Demograph", fontsize=20, color="white")
+        plt.legend(loc="upper center", ncols=5)
         plt.gcf().set_facecolor("#232D3F")
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
         ax.set_yticklabels(ax.get_yticklabels(), color="white")
         st.pyplot(fig)
         
-        dict = "PM2.5"
-        category_names = station_ranking_df.station.to_list()
-        results = { "" : station_ranking_df[dict].to_list()}    
-        labels = list(results.keys())
-        data = np.array(list(results.values()))
-        data_cum = data.cumsum(axis=1)
-        category_colors = plt.colormaps['YlGnBu_r'](
-            np.linspace(0.15, 0.85, data.shape[1]))
-        
-        fig, ax = plt.subplots(figsize=(17.45, 0.4))
-        ax.invert_yaxis()
-        ax.xaxis.set_visible(False)
-        ax.set_xlim(0, np.sum(data, axis=1).max())    
-        
-        set_color = ["#4477CE", "#35155D", "#E84A5F", "#6BB9CC", "#FFAC33", "#94D82D", "#D37BA6", "#00A896", "#F9F871", "#926C42", "#875F9A", "#FF686B"]
-        
-        for i, (colname, color) in enumerate(zip(category_names, category_colors)):
-            widths = data[:, i]
-            starts = data_cum[:, i] - widths
-            rects = ax.barh(labels, widths, left=starts, height=0.5,
-            label=colname, color=set_color[i])
-            
-            ax.bar_label(rects, label_type='center', color=set_color[i])
-        ax.legend(ncols=len(category_names), bbox_to_anchor=(0, -1),
-                  loc='lower left', fontsize='small')
-        plt.title("Station Pollution Order : Highest to Lowest", fontsize=10, color="white")
-        plt.gcf().set_facecolor("#232D3F")
-        st.pyplot(fig)
+
     
     with col2:
         
@@ -204,7 +177,8 @@ with tab1:
         sizes = pollutant_data["Mean"]
             
         # Membuat plot pie
-        fig, ax = plt.subplots(figsize=(10, 20))
+        st.subheader("Most Pollutant in All Station")
+        fig, ax = plt.subplots(figsize=(8.48, 18))
         
         
         colors = ["#4477CE", "#35155D", "#E84A5F", "#FFAC33", "#94D82D", "#F9F871"]
@@ -221,70 +195,36 @@ with tab1:
         plt.gcf().set_facecolor("#232D3F")
         # Menambahkan label di luar pie chart
         ax.legend(wedges, label_fmt, title="Pollutants", ncol=6, loc="lower center")
-        plt.title("\n Most Pollutant in All Station \n", loc="center", fontsize=20, color="white")
         st.pyplot(fig)
     
+    st.subheader("Station Pollution Order : Highest to Lowest")
+    dict = "PM2.5"
+    category_names = station_ranking_df.station.to_list()
+    results = { "" : station_ranking_df[dict].to_list()}    
+    labels = list(results.keys())
+    data = np.array(list(results.values()))
+    data_cum = data.cumsum(axis=1)
+    category_colors = plt.colormaps['YlGnBu_r'](
+        np.linspace(0.15, 0.85, data.shape[1]))
     
+    fig, ax = plt.subplots(figsize=(16.45, 0.4))
+    ax.invert_yaxis()
+    ax.xaxis.set_visible(False)
+    ax.set_xlim(0, np.sum(data, axis=1).max())    
     
+    set_color = ["#4477CE", "#35155D", "#E84A5F", "#6BB9CC", "#FFAC33", "#94D82D", "#D37BA6", "#00A896", "#F9F871", "#926C42", "#875F9A", "#FF686B"]
     
-    station_list = st.multiselect("Station", ["Aotizhongxin", 
-                                                  "Changping", 
-                                                  "Dingling", 
-                                                  "Dongsi", 
-                                                  "Guanyuan", 
-                                                  "Gucheng", 
-                                                  "Huairou", 
-                                                  "Nongzhanguan", 
-                                                  "Shunyi", 
-                                                  "Tiantan", 
-                                                  "Wanliu", 
-                                                  "Wanshouxigong"], label_visibility="hidden", default=["Aotizhongxin", "Changping"])
+    for i, (colname, color) in enumerate(zip(category_names, category_colors)):
+        widths = data[:, i]
+        starts = data_cum[:, i] - widths
+        rects = ax.barh(labels, widths, left=starts, height=0.5,
+        label=colname, color=set_color[i])
         
-       # membuat dropdown
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-       pollutant_terpilih = st.selectbox("Pollutant", ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"], key="comparrisson")
-    
-    with col2:
-       hari_terpilih = st.selectbox("Date", list(range(1, 32)), index=3)
-   
-    with col3:
-       bulan_terpilih = st.selectbox("Month", list(range(1, 13)), index=2)
-   
-    with col4:
-       tahun_terpilih = st.selectbox("Year", list(range(2013,2018)), index=2)
-    
-        # membuat visualisasi data
-    fig, ax = plt.subplots(figsize=(24,6))
-    
-    # plot menggunakan Seaborn
-    sns.set_style("whitegrid")
-    
-    # daftar warna garis
-    colors = ["#4477CE", "#35155D", "#E84A5F", "#6BB9CC", "#FFAC33", "#94D82D", "#D37BA6", "#00A896", "#F9F871", "#926C42", "#875F9A", "#FF686B"]
-    
-
-    # data terpilih
-    selected_data = pollutant_comparisson_df[
-        (pollutant_comparisson_df["day"] == hari_terpilih) & 
-        (pollutant_comparisson_df["month"] == bulan_terpilih) & 
-        (pollutant_comparisson_df["year"] == tahun_terpilih) & 
-        (pollutant_comparisson_df["hour"] < 24)]
-    selected_data = selected_data[selected_data["station"].isin(station_list)]
-    # Menggunakan seaborn lineplot 
-    # membuat data perbandingan PM2.5
-    sns.lineplot(data=selected_data, x="hour", y=pollutant_terpilih, hue="station", legend=False, palette=colors, linewidth=1.5)
-    ax.set_xlabel("hour")
-    ax.set_ylabel(pollutant_terpilih)
-    ax.set_xticklabels(ax.get_xticklabels(), color="white")
-    ax.set_yticklabels(ax.get_yticklabels(), color="white")
-    ax.tick_params(axis="x", labelsize=12)
-    ax.tick_params(axis="y", labelsize=12)
+        ax.bar_label(rects, label_type='center', color=set_color[i])
+    ax.legend(ncols=len(category_names), bbox_to_anchor=(0, -1),
+              loc='lower left', fontsize='small')
     plt.gcf().set_facecolor("#232D3F")
-    plt.suptitle(f"\n{pollutant_terpilih} Comparison In Selected Station\n\n", fontsize=20, color="white")
-    fig.legend(station_list, loc="lower center", ncol=12)
     st.pyplot(fig)
-    
 
 
 with tab2:
@@ -335,11 +275,11 @@ with tab2:
     col5, col6 = st.columns([16, 8.3])
         
     with col5:
+        st.subheader(f"Air Quality Index (AQI) in {stasiun_terpilih}")
         fig, ax = plt.subplots(figsize=(16.5, 5.4))   
         sns.barplot(data=selected_data, y="PM2.5", x="hour", palette=colors, hue="aqi (by PM2.5)", ax=ax)
         ax.set_xlabel("Hour", color="white")
         ax.set_ylabel("PM2.5", color="white")
-        ax.set_title(f"Air Quality Index (AQI) in {stasiun_terpilih}", loc="center", fontsize=20, color="white")
         ax.tick_params(axis="x", labelsize=12)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
@@ -353,26 +293,84 @@ with tab2:
         Pollutants = ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"]
         colors = ["#4477CE", "#35155D", "#E84A5F", "#FFAC33", "#F9F871", "#94D82D"]
         
-        
+        st.subheader(f'Most Pollutant in {stasiun_terpilih} Station')
         # Membuat plot pie untuk semua stasiun
-        fig, ax = plt.subplots(figsize=(14.5, 7.28))
+        fig, ax = plt.subplots(figsize=(16, 7.59))
         
         ax.pie(station(selected_station), startangle=0, colors=colors)
-        ax.set_title(f'\nMost Pollutant in {stasiun_terpilih} Station', fontsize= 20, color="white")
         plt.gcf().set_facecolor("#232D3F")
         ax.legend(fmt(selected_station), title='Pollutants', loc='lower center', ncols=6)
 
         st.pyplot(fig)
-            
-        
-        
-        
+
 with tab3:
+    station_list = st.multiselect("Station", ["Aotizhongxin", 
+                                                  "Changping", 
+                                                  "Dingling", 
+                                                  "Dongsi", 
+                                                  "Guanyuan", 
+                                                  "Gucheng", 
+                                                  "Huairou", 
+                                                  "Nongzhanguan", 
+                                                  "Shunyi", 
+                                                  "Tiantan", 
+                                                  "Wanliu", 
+                                                  "Wanshouxigong"], label_visibility="hidden", default=["Aotizhongxin", "Changping"])
+        
+       # membuat dropdown
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+       pollutant_terpilih = st.selectbox("Pollutant", ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"], key="comparrisson")
+    
+    with col2:
+       hari_terpilih = st.selectbox("Date", list(range(1, 32)), index=3)
+   
+    with col3:
+       bulan_terpilih = st.selectbox("Month", list(range(1, 13)), index=2)
+   
+    with col4:
+       tahun_terpilih = st.selectbox("Year", list(range(2013,2018)), index=2)
+    
+        # membuat visualisasi data
+    fig, ax = plt.subplots(figsize=(24,6))
+    
+    # plot menggunakan Seaborn
+    sns.set_style("whitegrid")
+    
+    # daftar warna garis
+    colors = ["#4477CE", "#35155D", "#E84A5F", "#6BB9CC", "#FFAC33", "#94D82D", "#D37BA6", "#00A896", "#F9F871", "#926C42", "#875F9A", "#FF686B"]
+    
+    
+    # data terpilih
+    selected_data = pollutant_comparisson_df[
+        (pollutant_comparisson_df["day"] == hari_terpilih) & 
+        (pollutant_comparisson_df["month"] == bulan_terpilih) & 
+        (pollutant_comparisson_df["year"] == tahun_terpilih) & 
+        (pollutant_comparisson_df["hour"] < 24)]
+    selected_data = selected_data[selected_data["station"].isin(station_list)]
+    # Menggunakan seaborn lineplot 
+    # membuat data perbandingan PM2.5
+    st.subheader(f"{pollutant_terpilih} Comparison In Selected Station")
+
+
+    sns.lineplot(data=selected_data, x="hour", y=pollutant_terpilih, hue="station", legend=False, palette=colors, linewidth=1.5)
+    ax.set_xlabel("hour")
+    ax.set_ylabel(pollutant_terpilih)
+    ax.set_xticklabels(ax.get_xticklabels(), color="white")
+    ax.set_yticklabels(ax.get_yticklabels(), color="white")
+    ax.tick_params(axis="x", labelsize=12)
+    ax.tick_params(axis="y", labelsize=12)
+    plt.gcf().set_facecolor("#232D3F")
+    fig.legend(station_list, loc="lower center", ncol=12)
+    st.pyplot(fig)
+    
+with tab4:
     selected_pollutant = st.selectbox("Pollutant", ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"], key="Regretion")
     
     col1, col2 = st.columns(2)
 
     with col1:
+        st.subheader(f"Season vs {selected_pollutant}")
 
         fig, ax = plt.subplots(figsize=(6,4))
         
@@ -381,7 +379,6 @@ with tab3:
         ax.set_xlabel("month", color="white")
         ax.set_ylabel(selected_pollutant, color="white")
         ax.set_xlim(0, 13)
-        ax.set_title(f"Season vs {selected_pollutant}", loc="center", fontsize=20, color="white")
         ax.tick_params(axis="x", labelsize=12)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
@@ -391,6 +388,7 @@ with tab3:
         st.pyplot(fig)
     
     with col2:
+        st.subheader(f"Pressure vs {selected_pollutant}")
         fig, ax = plt.subplots(figsize=(6,4))
 
         # Menggunakan seaborn regplot 
@@ -399,7 +397,6 @@ with tab3:
         ax.set_xlabel(selected_pollutant, color="white")
         ax.set_ylabel("% Pressure", color="white")
         ax.set_ylim(0, 110)
-        ax.set_title(f"Pressure vs {selected_pollutant}", loc="center", fontsize=20, color="white")
         ax.tick_params(axis="x", labelsize=12)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
@@ -412,6 +409,7 @@ with tab3:
     col3, col4 = st.columns(2)
 
     with col3:
+        st.subheader(f"Temperatur vs {selected_pollutant}")
     
                 # membuat scatterplot perbandingan antara temperatur dengan pollutant
         fig, ax = plt.subplots(figsize=(6,4))
@@ -422,7 +420,6 @@ with tab3:
         ax.set_xlabel(selected_pollutant, color="white")
         ax.set_ylabel("% Temperature", color="white")
         ax.set_ylim(0, 110)
-        ax.set_title(f"Temperatur vs {selected_pollutant}", loc="center", fontsize=20, color="white")
         ax.tick_params(axis="x", labelsize=12)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
@@ -431,6 +428,7 @@ with tab3:
         st.pyplot(fig)
 
     with col4:
+        st.subheader(f"Rain vs {selected_pollutant}")
         fig, ax = plt.subplots(figsize=(6,4))
 
         # Menggunakan seaborn regplot 
@@ -438,7 +436,6 @@ with tab3:
         sns.regplot(data=rain_regretion_df, x=selected_pollutant, y="rain_q")
         ax.set_xlabel(selected_pollutant, color="white")
         ax.set_ylabel("% Rain", color="white")
-        ax.set_title(f"Rain vs {selected_pollutant}", loc="center", fontsize=20, color="white")
         ax.tick_params(axis="x", labelsize=12)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_xticklabels(ax.get_xticklabels(), color="white")
