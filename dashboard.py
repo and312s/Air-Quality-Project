@@ -295,7 +295,7 @@ with tab2:
         
         st.subheader(f'Most Pollutant in {stasiun_terpilih}')
         # Membuat plot pie untuk semua stasiun
-        fig, ax = plt.subplots(figsize=(16, 7.59))
+        fig, ax = plt.subplots(figsize=(18, 8))
         
         ax.pie(station(selected_station), startangle=0, colors=colors)
         plt.gcf().set_facecolor("#232D3F")
