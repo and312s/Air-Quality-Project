@@ -178,7 +178,7 @@ with tab1:
             
         # Membuat plot pie
         st.subheader("Most Pollutant in All Station")
-        fig, ax = plt.subplots(figsize=(8.48, 18))
+        fig, ax = plt.subplots(figsize=(8.9, 18))
         
         
         colors = ["#4477CE", "#35155D", "#E84A5F", "#FFAC33", "#94D82D", "#F9F871"]
@@ -207,7 +207,7 @@ with tab1:
     category_colors = plt.colormaps['YlGnBu_r'](
         np.linspace(0.15, 0.85, data.shape[1]))
     
-    fig, ax = plt.subplots(figsize=(16.45, 0.4))
+    fig, ax = plt.subplots(figsize=(17.4, 0.4))
     ax.invert_yaxis()
     ax.xaxis.set_visible(False)
     ax.set_xlim(0, np.sum(data, axis=1).max())    
@@ -293,7 +293,7 @@ with tab2:
         Pollutants = ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"]
         colors = ["#4477CE", "#35155D", "#E84A5F", "#FFAC33", "#F9F871", "#94D82D"]
         
-        st.subheader(f'Most Pollutant in {stasiun_terpilih} Station')
+        st.subheader(f'Most Pollutant in {stasiun_terpilih}')
         # Membuat plot pie untuk semua stasiun
         fig, ax = plt.subplots(figsize=(16, 7.59))
         
