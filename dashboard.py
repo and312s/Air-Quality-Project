@@ -136,7 +136,7 @@ with tab1:
     
     with col4:
         avg_NO2 = round(all_df["NO2"].mean(), 1)
-        st.metric("Average PM2.5", value=avg_NO2)
+        st.metric("Average NO2", value=avg_NO2)
     
     with col5:
         avg_CO = round(all_df["CO"].mean(), 1)
@@ -176,7 +176,7 @@ with tab1:
         category_colors = plt.colormaps['YlGnBu_r'](
             np.linspace(0.15, 0.85, data.shape[1]))
         
-        fig, ax = plt.subplots(figsize=(16.45, 0.4))
+        fig, ax = plt.subplots(figsize=(16.5, 0.4))
         ax.invert_yaxis()
         ax.xaxis.set_visible(False)
         ax.set_xlim(0, np.sum(data, axis=1).max())    
